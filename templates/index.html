@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Email Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>AI Email Generator</h1>
+        <div class="prompt-section">
+            <input type="text" id="prompt-input" placeholder="Enter your prompt here...">
+            <button id="generate-btn">Generate Code</button>
+        </div>
+        <div class="generated-sections">
+            <div class="generated-code">
+                <h2>Generated Code:</h2>
+                <pre id="code-output"></pre>
+            </div>
+            <div class="generated-visual">
+                <h2>Visual Preview:</h2>
+                <iframe id="visual-output" src="" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('generate-btn').onclick = function() {
+            const prompt = document.getElementById('prompt-input').value;
+            fetch('/generate', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ prompt: prompt })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.code) {
+                    document.getElementById('code-output').textContent = data.code;
+                    document.getElementById('visual-output').src = data.visual; // Set the visual URL
+                } else {
+                    alert(data.error);
+                }
+            });
+        };
+    </script>
+</body>
+</html>
